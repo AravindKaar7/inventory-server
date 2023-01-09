@@ -142,5 +142,18 @@ async def test():
     for bucket in response['Buckets']:
         print(f' {bucket["Name"]}')
     return 'true'
+@app.get('/viz/industry')
+async def group():
+    global db
+    data = []
+    coll = db.industry
+    coll2 = db['components-2']
+    print(coll)
+    for i in coll.find({}):
+        if coll2.find_one({'industry':i['industry']}):
+            del i['_id']
+            data.append(i)
+    return {'message':data}
+
 if __name__ == '__main__':
     uvicorn.run(app)
